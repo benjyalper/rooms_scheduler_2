@@ -8,7 +8,7 @@ $(document).ready(function () {
     });
 
     $('.back-btn').click(function () {
-        window.location.href = 'http://localhost:3000/';
+        window.location.href = 'https://rooms-scheduler-65113cf9659f.herokuapp.com/';
     });
 
     $('.now').click(function () {
