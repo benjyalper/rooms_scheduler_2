@@ -4,7 +4,7 @@ $(document).ready(function () {
     $('.door').on('click', function () {
         const room = $(this).closest('.room');
         currentRoomNumber = $(room).data('room-number');
-        window.location.href = '/room/' + currentRoomNumber;
+        window.location.href = 'https://rooms-scheduler-65113cf9659f.herokuapp.com/room/' + currentRoomNumber;
     });
 
     $('.back-btn').click(function () {
@@ -12,11 +12,11 @@ $(document).ready(function () {
     });
 
     $('.now').click(function () {
-        window.location.href = '/dateData/';
+        window.location.href = 'https://rooms-scheduler-65113cf9659f.herokuapp.com/dateData/';
     });
 
     $('.room-schedule-link').click(function () {
-        window.location.href = '/room-schedule.html';
+        window.location.href = 'https://rooms-scheduler-65113cf9659f.herokuapp.com/room-schedule.html';
     });
 
     // $('.room-form-link').click(function () {
@@ -28,7 +28,7 @@ $(document).ready(function () {
     });
 
     $('.cat-link').click(function () {
-        window.location.href = '/cat.html';
+        window.location.href = 'https://rooms-scheduler-65113cf9659f.herokuapp.com/cat.html';
     });
 
     $('.cat').on('click', function () {
@@ -124,7 +124,7 @@ async function fetchDataByDate() {
                         fetchDataByDate()
                     } else {
                         // Redirect to room form
-                        window.location.href = `/room-form.html`;
+                        window.location.href = `https://rooms-scheduler-65113cf9659f.herokuapp.com/room-form.html`;
                     }
 
                     async function deleteEntry(roomNumber, startTime) {
