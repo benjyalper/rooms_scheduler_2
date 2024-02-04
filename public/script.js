@@ -51,7 +51,7 @@ async function submitDate() {
     const endTime = $('#endTime').val();
     const roomNumber = $('#roomNumber').val();
 
-    const response = await fetch('/submit', {
+    const response = await fetch('https://rooms-scheduler-65113cf9659f.herokuapp.com/submit', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
