@@ -26,6 +26,8 @@ const pool = mysql.createPool({
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
+
+
 // Set EJS as the view engine
 app.set('view engine', 'ejs');
 
@@ -40,7 +42,7 @@ const checkDatabaseConnection = async (req, res, next) => {
         // Attempt to acquire a connection from the pool
         const connection = await pool.getConnection();
         connection.release(); // Release the connection back to the pool
-
+        console.log("db connection")
         // If the code reaches here, the database connection is successful
         next();
     } catch (error) {
@@ -49,6 +51,7 @@ const checkDatabaseConnection = async (req, res, next) => {
     }
 };
 
+app.use(checkDatabaseConnection);
 // Express route to submit date, names, and color
 app.post('/submit', async (req, res) => {
     try {
