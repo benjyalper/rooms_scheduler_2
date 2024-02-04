@@ -108,7 +108,7 @@ app.get('https://rooms-scheduler-65113cf9659f.herokuapp.com/room/:roomNumber', a
 
 
 // Express route to fetch all data for a specific date
-app.get('https://rooms-scheduler-65113cf9659f.herokuapp.com/fetchDataByDate', async (req, res) => {
+app.get('/fetchDataByDate', async (req, res) => {
     try {
         const lookupDate = req.query.date || moment().format('YYYY-MM-DD');
 
