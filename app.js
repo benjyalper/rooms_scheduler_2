@@ -36,7 +36,7 @@ app.get('/public/', (req, res) => {
 });
 
 // Express route to submit date, names, and color
-app.post('/submit', async (req, res) => {
+app.post('https://rooms-scheduler-65113cf9659f.herokuapp.com/submit', async (req, res) => {
     try {
         const selectedDate = req.body.selectedDate;
         const names = req.body.names;
