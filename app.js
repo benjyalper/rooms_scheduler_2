@@ -36,7 +36,7 @@ app.get('/public/', (req, res) => {
 });
 
 // Express route to submit date, names, and color
-app.post('https://rooms-scheduler-65113cf9659f.herokuapp.com/submit', async (req, res) => {
+app.post('/submit', async (req, res) => {
     try {
         const selectedDate = req.body.selectedDate;
         const names = req.body.names;
@@ -58,7 +58,7 @@ app.post('https://rooms-scheduler-65113cf9659f.herokuapp.com/submit', async (req
     }
 });
 
-app.delete('https://rooms-scheduler-65113cf9659f.herokuapp.com/deleteEntry', async (req, res) => {
+app.delete('/deleteEntry', async (req, res) => {
     const { roomNumber, startTime } = req.query;
 
     // Validate parameters
@@ -82,7 +82,7 @@ app.delete('https://rooms-scheduler-65113cf9659f.herokuapp.com/deleteEntry', asy
 
 });
 
-app.get('https://rooms-scheduler-65113cf9659f.herokuapp.com/room/:roomNumber', async (req, res) => {
+app.get('/room/:roomNumber', async (req, res) => {
     const roomNumber = req.params.roomNumber;
 
     try {
@@ -128,7 +128,7 @@ app.get('/fetchDataByDate', async (req, res) => {
 });
 
 // Express route to fetch all data for today
-app.get('https://rooms-scheduler-65113cf9659f.herokuapp.com/dateData', async (req, res) => {
+app.get('/dateData', async (req, res) => {
     try {
         const nowMoment = moment().format('YYYY-MM-DD');
 
@@ -151,7 +151,7 @@ app.get('https://rooms-scheduler-65113cf9659f.herokuapp.com/dateData', async (re
 });
 
 
-app.post('https://rooms-scheduler-65113cf9659f.herokuapp.com/therapist-form', async (req, res) => {
+app.post('/therapist-form', async (req, res) => {
     try {
         const formData = req.body;
         const { therapistName, roomNumber, startTime, endTime, selectedDate } = formData;
@@ -176,7 +176,7 @@ app.post('https://rooms-scheduler-65113cf9659f.herokuapp.com/therapist-form', as
 });
 
 // Express route to delete a row
-app.post('https://rooms-scheduler-65113cf9659f.herokuapp.com/deleteRow', async (req, res) => {
+app.post('/deleteRow', async (req, res) => {
     try {
         const { roomNumber, startTime, endTime } = req.body;
         console.log({ roomNumber, startTime, endTime })

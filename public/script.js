@@ -73,7 +73,7 @@ async function fetchDataByDate() {
 
     try {
         const encodedDate = encodeURIComponent(lookupDate);
-        const response = await fetch(`/fetchDataByDate?date=${encodedDate}`);
+        const response = await fetch(`https://rooms-scheduler-65113cf9659f.herokuapp.com/fetchDataByDate?date=${encodedDate}`);
         const results = await response.json();
 
         if (results.length > 0) {
@@ -129,7 +129,7 @@ async function fetchDataByDate() {
 
                     async function deleteEntry(roomNumber, startTime) {
                         try {
-                            const response = await fetch(`/deleteEntry?roomNumber=${roomNumber}&startTime=${startTime}`, {
+                            const response = await fetch(`https://rooms-scheduler-65113cf9659f.herokuapp.com/deleteEntry?roomNumber=${roomNumber}&startTime=${startTime}`, {
                                 method: 'DELETE',
                             });
 
@@ -171,7 +171,7 @@ async function dateData() {
 
     try {
         const encodedDate = encodeURIComponent(nowMoment);
-        const response = await fetch(`/dateData?date=${encodedDate}`);
+        const response = await fetch(`https://rooms-scheduler-65113cf9659f.herokuapp.com/dateData?date=${encodedDate}`);
         const results = await response.json();
         console.log(nowMoment.names)
 
@@ -209,7 +209,7 @@ $(document).ready(function () {
 async function deleteColoredCells(roomNumber, startTime, endTime) {
     try {
         // Make a server-side request to delete the corresponding row from the database
-        const response = await fetch('/deleteRow', {
+        const response = await fetch('https://rooms-scheduler-65113cf9659f.herokuapp.com/deleteRow', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -288,7 +288,7 @@ async function deleteCellsAndRow(roomNumber, startTime, endTime) {
     // Perform deletion logic here, e.g., make a server-side request to delete the data
 
     try {
-        const response = await fetch('/deleteCellsAndRow', {
+        const response = await fetch('https://rooms-scheduler-65113cf9659f.herokuapp.com/deleteCellsAndRow', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
