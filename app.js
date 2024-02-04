@@ -35,6 +35,20 @@ app.get('/public/', (req, res) => {
     res.sendFile(__dirname + '/index.html');
 });
 
+const checkDatabaseConnection = async (req, res, next) => {
+    try {
+        // Attempt to acquire a connection from the pool
+        const connection = await pool.getConnection();
+        connection.release(); // Release the connection back to the pool
+
+        // If the code reaches here, the database connection is successful
+        next();
+    } catch (error) {
+        console.error('Database connection error:', error);
+        res.status(500).send('Database connection error');
+    }
+};
+
 // Express route to submit date, names, and color
 app.post('/submit', async (req, res) => {
     try {
