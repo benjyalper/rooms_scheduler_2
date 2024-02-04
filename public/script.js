@@ -24,7 +24,7 @@ $(document).ready(function () {
     // });
 
     $('.drop-down-to-room-form-link').click(function () {
-        window.location.href = '/room-form.html';
+        window.location.href = 'https://rooms-scheduler-65113cf9659f.herokuapp.com/room-form.html';
     });
 
     $('.cat-link').click(function () {
