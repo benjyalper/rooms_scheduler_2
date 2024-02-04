@@ -58,7 +58,7 @@ app.post('https://rooms-scheduler-65113cf9659f.herokuapp.com/submit', async (req
     }
 });
 
-app.delete('/deleteEntry', async (req, res) => {
+app.delete('https://rooms-scheduler-65113cf9659f.herokuapp.com/deleteEntry', async (req, res) => {
     const { roomNumber, startTime } = req.query;
 
     // Validate parameters
@@ -82,7 +82,7 @@ app.delete('/deleteEntry', async (req, res) => {
 
 });
 
-app.get('/room/:roomNumber', async (req, res) => {
+app.get('https://rooms-scheduler-65113cf9659f.herokuapp.com/room/:roomNumber', async (req, res) => {
     const roomNumber = req.params.roomNumber;
 
     try {
@@ -108,7 +108,7 @@ app.get('/room/:roomNumber', async (req, res) => {
 
 
 // Express route to fetch all data for a specific date
-app.get('/fetchDataByDate', async (req, res) => {
+app.get('https://rooms-scheduler-65113cf9659f.herokuapp.com/fetchDataByDate', async (req, res) => {
     try {
         const lookupDate = req.query.date || moment().format('YYYY-MM-DD');
 
@@ -128,7 +128,7 @@ app.get('/fetchDataByDate', async (req, res) => {
 });
 
 // Express route to fetch all data for today
-app.get('/dateData', async (req, res) => {
+app.get('https://rooms-scheduler-65113cf9659f.herokuapp.com/dateData', async (req, res) => {
     try {
         const nowMoment = moment().format('YYYY-MM-DD');
 
@@ -151,7 +151,7 @@ app.get('/dateData', async (req, res) => {
 });
 
 
-app.post('/therapist-form', async (req, res) => {
+app.post('https://rooms-scheduler-65113cf9659f.herokuapp.com/therapist-form', async (req, res) => {
     try {
         const formData = req.body;
         const { therapistName, roomNumber, startTime, endTime, selectedDate } = formData;
@@ -176,7 +176,7 @@ app.post('/therapist-form', async (req, res) => {
 });
 
 // Express route to delete a row
-app.post('/deleteRow', async (req, res) => {
+app.post('https://rooms-scheduler-65113cf9659f.herokuapp.com/deleteRow', async (req, res) => {
     try {
         const { roomNumber, startTime, endTime } = req.body;
         console.log({ roomNumber, startTime, endTime })
