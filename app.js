@@ -1,32 +1,25 @@
 // Import necessary modules
 import express from 'express';
 import bodyParser from 'body-parser';
-import mysql from 'mysql2/promise'; // Use the promise version of mysql2
+import { Pool } from 'pg';
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
 import moment from 'moment';
-
-
 
 const app = express();
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const port = process.env.PORT || 3000;
 
-// Create a MySQL connection pool
-const pool = mysql.createPool({
-    host: 'localhost',
-    user: 'root',
-    password: 'Ag1ag1ag1$',
-    database: 'wishDatabase',
-    waitForConnections: true,
-    connectionLimit: 10,
-    queueLimit: 0,
+// Create a PostgreSQL connection pool
+const pool = new Pool({
+    connectionString: process.env.DATABASE_URL,
+    ssl: {
+        rejectUnauthorized: false,
+    },
 });
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-
-
 
 // Set EJS as the view engine
 app.set('view engine', 'ejs');
@@ -37,36 +30,27 @@ app.get('/public/', (req, res) => {
     res.sendFile(__dirname + '/index.html');
 });
 
-const checkDatabaseConnection = async (req, res, next) => {
-    try {
-        // Attempt to acquire a connection from the pool
-        const connection = await pool.getConnection();
-        connection.release(); // Release the connection back to the pool
-        console.log("db connection")
-        // If the code reaches here, the database connection is successful
-        next();
-    } catch (error) {
-        console.error('Database connection error:', error);
-        res.status(500).send('Database connection error');
-    }
-};
-
-app.use(checkDatabaseConnection);
 // Express route to submit date, names, and color
 app.post('/submit', async (req, res) => {
     try {
         const selectedDate = req.body.selectedDate;
         const names = req.body.names;
-        const selectedColor = req.body.selectedColor; // Get the selected color
+        const selectedColor = req.body.selectedColor;
         const startTime = req.body.startTime;
         const endTime = req.body.endTime;
         const roomNumber = req.body.roomNumber;
 
         // Validate inputs (if needed)
 
-        const connection = await pool.getConnection();
-        await connection.execute('INSERT INTO selected_dates (selected_date, names, color, startTime, endTime, roomNumber) VALUES (?, ?, ?, ?, ?, ?)', [selectedDate, names, selectedColor, startTime, endTime, roomNumber]);
-        connection.release();
+        const client = await pool.connect();
+        try {
+            await client.query(
+                'INSERT INTO selected_dates (selected_date, names, color, startTime, endTime, roomNumber) VALUES ($1, $2, $3, $4, $5, $6)',
+                [selectedDate, names, selectedColor, startTime, endTime, roomNumber]
+            );
+        } finally {
+            client.release();
+        }
 
         res.status(200).send('סידור חדרים עודכן בהצלחה.');
     } catch (error) {
@@ -84,20 +68,20 @@ app.delete('/deleteEntry', async (req, res) => {
     }
 
     try {
-        const connection = await pool.getConnection();
+        const client = await pool.connect();
 
         // Execute a DELETE query in your database
-        await connection.execute('DELETE FROM selected_dates WHERE roomNumber = ? AND startTime = ?', [roomNumber, startTime]);
+        await client.query('DELETE FROM selected_dates WHERE roomNumber = $1 AND startTime = $2', [roomNumber, startTime]);
 
-        connection.release();
+        client.release();
 
         return res.sendStatus(200); // OK status for successful deletion
     } catch (error) {
         console.error('Error deleting entry from the database:', error);
         return res.status(500).send('Internal Server Error');
     }
-
 });
+
 
 app.get('/room/:roomNumber', async (req, res) => {
     const roomNumber = req.params.roomNumber;
@@ -105,11 +89,11 @@ app.get('/room/:roomNumber', async (req, res) => {
     try {
         // Retrieve room schedule data from MySQL database
         const connection = await pool.getConnection();
-        const [roomRows] = await connection.execute('SELECT * FROM selected_dates WHERE roomNumber = ?', [roomNumber]);
+        const [roomRows] = await connection.execute('SELECT * FROM selected_dates WHERE roomNumber = $1', [roomNumber]);
 
         // Fetch data for today
         const nowMoment = moment().format('YYYY-MM-DD');
-        const [dateRows] = await connection.execute('SELECT names, color, startTime, endTime, roomNumber FROM selected_dates WHERE selected_date = ?', [nowMoment]);
+        const [dateRows] = await connection.execute('SELECT names, color, startTime, endTime, roomNumber FROM selected_dates WHERE selected_date = $1', [nowMoment]);
 
         connection.release();
 
@@ -130,7 +114,7 @@ app.get('/fetchDataByDate', async (req, res) => {
         const lookupDate = req.query.date || moment().format('YYYY-MM-DD');
 
         const connection = await pool.getConnection();
-        const [rows] = await connection.execute('SELECT names, color, startTime, endTime, roomNumber FROM selected_dates WHERE selected_date = ?', [lookupDate]);
+        const [rows] = await connection.execute('SELECT names, color, startTime, endTime, roomNumber FROM selected_dates WHERE selected_date = $1', [lookupDate]);
         connection.release();
 
         if (rows.length > 0) {
@@ -150,7 +134,7 @@ app.get('/dateData', async (req, res) => {
         const nowMoment = moment().format('YYYY-MM-DD');
 
         const connection = await pool.getConnection();
-        const [rows] = await connection.execute('SELECT names, color, startTime, endTime, roomNumber FROM selected_dates WHERE selected_date = ?', [nowMoment]);
+        const [rows] = await connection.execute('SELECT names, color, startTime, endTime, roomNumber FROM selected_dates WHERE selected_date = $1', [nowMoment]);
         connection.release();
 
         if (rows.length > 0) {
@@ -177,7 +161,7 @@ app.post('/therapist-form', async (req, res) => {
         const connection = await pool.getConnection();
         try {
             await connection.execute(
-                'INSERT INTO selected_dates ( roomNumber, startTime, endTime) VALUES (?, ?, ?)',
+                'INSERT INTO selected_dates ( roomNumber, startTime, endTime) VALUES ($1, $2, $3)',
                 [roomNumber, startTime, endTime]
             );
         } finally {
@@ -201,7 +185,7 @@ app.post('/deleteRow', async (req, res) => {
         const connection = await pool.getConnection();
         try {
             // Delete the row from the database
-            await connection.execute('DELETE FROM selected_dates WHERE roomNumber = ? AND startTime = ? AND endTime = ?', [roomNumber, startTime, endTime]);
+            await connection.execute('DELETE FROM selected_dates WHERE roomNumber = $1 AND startTime = $2 AND endTime = $3', [roomNumber, startTime, endTime]);
             res.json({ success: true });
         } finally {
             connection.release();
