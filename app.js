@@ -1,10 +1,13 @@
 // Import necessary modules
 import express from 'express';
 import bodyParser from 'body-parser';
-import { Pool } from 'pg';
+// import { Pool } from 'pg';
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
 import moment from 'moment';
+import pg from 'pg'; // Use the default export of 'pg'
+
+const { Pool } = pg; // Destructure Pool from the pg object
 
 const app = express();
 const __dirname = dirname(fileURLToPath(import.meta.url));
