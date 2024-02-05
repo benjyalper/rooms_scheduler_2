@@ -1,13 +1,10 @@
 // Import necessary modules
 import express from 'express';
 import bodyParser from 'body-parser';
-// import { Pool } from 'pg';
+import { Pool } from 'pg';
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
 import moment from 'moment';
-import pg from 'pg'; // Use the default export of 'pg'
-
-const { Pool } = pg; // Destructure Pool from the pg object
 
 const app = express();
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -20,6 +17,7 @@ const pool = new Pool({
         rejectUnauthorized: false,
     },
 });
+
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -113,23 +111,19 @@ app.get('/room/:roomNumber', async (req, res) => {
 
 // Express route to fetch all data for a specific date
 app.get('/fetchDataByDate', async (req, res) => {
+    const date = req.query.date;
     try {
-        const lookupDate = req.query.date || moment().format('YYYY-MM-DD');
-
-        const connection = await pool.getConnection();
-        const [rows] = await connection.execute('SELECT names, color, startTime, endTime, roomNumber FROM selected_dates WHERE selected_date = $1', [lookupDate]);
-        connection.release();
-
-        if (rows.length > 0) {
-            res.json(rows);
-        } else {
-            res.status(404).json({ error: 'No data found for the specified date.' });
-        }
+        const client = await pool.connect();
+        const result = await client.query('SELECT * FROM your_table WHERE date = $1', [date]);
+        const data = result.rows;
+        client.release();
+        res.json(data);
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Internal Server Error' });
+        console.error('Error retrieving data from the database:', error);
+        res.status(500).send('Internal Server Error');
     }
 });
+
 
 // Express route to fetch all data for today
 app.get('/dateData', async (req, res) => {
