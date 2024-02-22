@@ -32,7 +32,7 @@ try {
 
 const app = express();
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 3000 || 5943;
 
 // Create a MySQL connection pool
 // const pool = mysql.createPool({
