@@ -6,6 +6,7 @@ import { dirname } from 'path';
 import { fileURLToPath } from 'url';
 import moment from 'moment';
 import dotenv from 'dotenv';
+import fs from 'fs/promises'; // Import the 'fs' module for file operations
 dotenv.config();
 
 // Create a connection to the database using the promise version
